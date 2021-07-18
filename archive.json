@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-15T00:17:37.175582+00:00",
+  "timestamp": "2021-07-18T00:19:33.012412+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2182,7 +2182,7 @@
       "labels": [],
       "body": "Since there are various versions of dtls implementations, should the protocol specify a common mechanism for disconnects? When the status of the peer end is unknown.",
       "createdAt": "2021-06-08T08:30:41Z",
-      "updatedAt": "2021-06-09T02:58:37Z",
+      "updatedAt": "2021-07-15T20:55:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -2212,6 +2212,20 @@
           "body": "I see. Thank you for your reply.",
           "createdAt": "2021-06-09T02:58:37Z",
           "updatedAt": "2021-06-09T02:58:37Z"
+        },
+        {
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@ekr should this be closed?",
+          "createdAt": "2021-07-15T18:38:49Z",
+          "updatedAt": "2021-07-15T18:38:49Z"
+        },
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "yes imo\n\nOn Thu, Jul 15, 2021 at 11:39 AM Sean Turner ***@***.***>\nwrote:\n\n> @ekr <https://github.com/ekr> should this be closed?\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/tlswg/dtls13-spec/issues/248#issuecomment-880926436>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAIPLIJ7UZIPPW5YZ6AJCWDTX4TMJANCNFSM46JME4XQ>\n> .\n>\n",
+          "createdAt": "2021-07-15T20:55:42Z",
+          "updatedAt": "2021-07-15T20:55:42Z"
         }
       ]
     },
@@ -2227,7 +2241,7 @@
       "labels": [],
       "body": "If I have understood and calculated correctly DTLS 1.3 limits the number of\r\npackets in a AES-GCM connection to 2^40.5 compared to 2^64 in DTLS 1.2. This\r\nis quite a severe limitation that is not mentioned explicitly. The AEAD limits\r\nin themselves are not a problem, but the combination of AEAD limits (2^24.5)\r\nand a small epoch (2^16) is a problem.\r\n\r\nI think this is major problem in some use cases of DTLS. E.g. most 3GPP 5G use\r\ncases where DTLS or DTLS/SCTP is used for semi-permanent connections (lasting years)\r\nand where the terminating the connection cause severe disturbances.\r\n\r\nI did not find any discussion about this problem (but I could easily have missed it)\r\n\r\nIt is known that the limit of 2^48 packets in SRTP can be reached and 2^40.5 is\r\nsignificantly smaller than this...\r\n\r\nIf the document was not in such a late stage, I would have suggested to increase the size\r\nof the epoch to 32 bits.....\r\n\r\nI think this and the other problems DTLS 1.3 has with semi-permanent connections has to be\r\nsolved sooner than later.\r\n",
       "createdAt": "2021-07-14T08:31:13Z",
-      "updatedAt": "2021-07-14T23:06:14Z",
+      "updatedAt": "2021-07-16T11:51:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -2264,6 +2278,67 @@
           "body": "Unless you think we should do uint64.\r\n\r\n@kaduk @chris-wood what would we have to do to make this change?",
           "createdAt": "2021-07-14T23:06:14Z",
           "updatedAt": "2021-07-14T23:06:14Z"
+        },
+        {
+          "author": "emanjon",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/63\r\n\r\n- Magnus Westerlund thinks uint64 would be a safer bet.\r\n\r\n- Michael T\u00fcxen suggest to wrap the uint16 epoch instead. That might be an easier solution. I don't see a direct problem in DTLSPlaintext, ACK message, or record_sequence_number with a uint16 epoch that is allowed to wrap like:\r\n\r\n4, 5, ... 2^16-1, 4, 5, ... 2^16-1, 4, 5, ... ",
+          "createdAt": "2021-07-15T10:56:02Z",
+          "updatedAt": "2021-07-15T10:56:02Z"
+        },
+        {
+          "author": "seanturner",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@ekr @kaduk @chris-wood since it's through the IESG we would need to at least raise that this change was made after they had approved it.  I suspect that doing some kind of 2-week heads up to the WG/IESG that we want to make the change before landing it. But, if we do that or something more drastic that's really up to @kaduk.",
+          "createdAt": "2021-07-15T18:36:51Z",
+          "updatedAt": "2021-07-15T18:36:51Z"
+        },
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "I want to point out that allowing wrapping per #252 may not be the best solution if one considers to use the DTLS epoch as part of the input to the TLS exporter as suggested in #253. Then one want an input that doesn't wrap, and then to ensure that one doesn't practically run into any limits, then an uint64 would be better. \r\n\r\nAn unit32 appears to be sufficient for a quite extreme use case with minimal messages size (which is one DTLS record with 4 byte user message) and high bandwidth (10 Gbps) sustained over a period of more than 5 years before the epoch would wrap. However, to my understanding the full epoch value are so rarely included in transmitted DTLS messages that its size have minimal implication on the overhead that it is not worth saving 4-bytes to be certain to have eliminated any practical limitation. ",
+          "createdAt": "2021-07-16T11:51:26Z",
+          "updatedAt": "2021-07-16T11:51:26Z"
+        }
+      ]
+    },
+    {
+      "number": 251,
+      "id": "MDU6SXNzdWU5NDU1MjQ1NDc=",
+      "title": "Establishing New Associations with Existing Parameters - SHOULD / please add description of the alternatives",
+      "url": "https://github.com/tlswg/dtls13-spec/issues/251",
+      "state": "OPEN",
+      "author": "boaks",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "[Establishing New Associations with Existing Parameters](https://github.com/tlswg/dtls13-spec/blob/master/draft-ietf-tls-dtls13.md#establishing-new-associations-with-existing-parameters)\r\n\r\n> In cases where a server believes it has an existing association on a given host/port quartet and it receives an epoch=0 ClientHello, it SHOULD proceed with a new handshake but MUST NOT destroy the existing association until the client has demonstrated reachability either by completing a cookie exchange or by completing a complete handshake including delivering a verifiable Finished message.\r\n\r\n(The same statement is also used in [DTLS 1.2, RFC6347 4.2.8.  Establishing New Associations with Existing Parameters](https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.8).)\r\n\r\nBasically it's about the `SHOULD`, because in a naive interpretation of that opens also alternative ways to go. Otherwise it would be a `MUST`. Therefore I would enjoy it, if some words about that alternatives, e.g. environments or other motivation, could be added.\r\n\r\nIn my experience with the IoT usage of DTLS 1.2, it seems, that `RFC5246 - 7.2.1.  Closure Alert` is used as alternative. But that results in some unreliability (e.g. [RIOT](https://github.com/RIOT-OS/RIOT/pull/16422), down the comments, about the motivation to use `close`).\r\n\r\nReading #248 and the \"Generally, I think that's out of scope at this time.\", I somehow think, this is the same for this issue. Maybe, if it's more the rough ideas behind than the details of the alternative, it 's not that disruptive (but more helpful than using a Closure Alert).",
+      "createdAt": "2021-07-15T15:46:15Z",
+      "updatedAt": "2021-07-15T15:46:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 253,
+      "id": "MDU6SXNzdWU5NDYxNzcxMDk=",
+      "title": "Rekeying in (D)TLS 1.3 does not update the exporter_secret",
+      "url": "https://github.com/tlswg/dtls13-spec/issues/253",
+      "state": "OPEN",
+      "author": "emanjon",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is another major problem for SCTP/DTLS and other semi-permanent uses of DTLS 1.3 uncovered during the work on RFC6083bis.\r\n\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis\r\n\r\nThe current text is RFC6083bis is a quite unfortune (We would really like to encourage and recommend use of DTLS 1.3):\r\n\"For upper layer protocols where frequent re-run of Diffie-Hellman, rekeying of SCTP-AUTH, and server reauthentication is required and creating a new SCTP connection with DTLS 1.3 to replace the current is not a viable option it is RECOMMENDED to use DTLS 1.2.\"\r\n\r\nSCTP/DTLS uses the TLS exporter to derive keys for SCTP-AUTH. SCTP/DTLS also uses SCTP-AUTH to handle when DTLS traffic keys from old epochs can be forgotten. With DTLS 1.2, renogotiation with ECDHE updates the exporter_secret. In DTLS 1.3, KeyUpdate does not update the exporter_secret. \r\n\r\nRFC6083bis is now considering using a \"hack\" of adding the epoch value (or other info) to the DTLS 1.3 exporter context to at least get different SCTP-AUTH keys for each epoch. This would solve any \"AEAD limits\" problems with HMAC-SHA256 (we don't know what these limits would be but keying at some point seems good). It does not provide good protection against key leakage/compromise as the exporter_secret must be stored for years. A future solution for SCTP/DTLS 1.3 should make sure that an attacker is forced to do dynamic key exfiltration {{RFC7624}}.\r\n\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/52\r\n\r\nThe RFC6083bis authors discussed this today and would like to ask **if DTLS 1.3 could provide the feature that the output of the TLS exporter changes after a KeyUpdate?**\r\n\r\nWhile the epoch limitations #249 are purely DTLS, this issue is inherited from TLS 1.3.",
+      "createdAt": "2021-07-16T10:56:46Z",
+      "updatedAt": "2021-07-16T14:45:14Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree that that text is unfortunate, but I feel like I'm kind of misunderstanding the situation.\r\n\r\nBecause KeyUpdate does not introduce new entropy, I would have expected users of exporters to export a key once and then to generate fresh keys as needed in an analagous fashion to the TLS transport key ladder rather than by re-exporting, which seems like it has risks of things getting desynchronized (for instance, how does the exporter work when you are sending with epoch X but receiving with X+1). What am I missing?\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-07-16T14:45:13Z",
+          "updatedAt": "2021-07-16T14:45:13Z"
         }
       ]
     }
@@ -11894,7 +11969,7 @@
     {
       "number": 250,
       "id": "MDExOlB1bGxSZXF1ZXN0NjkwMjYxOTM1",
-      "title": "Larger epochs",
+      "title": "More epochs per connection (uint32 or uint64)",
       "url": "https://github.com/tlswg/dtls13-spec/pull/250",
       "state": "OPEN",
       "author": "emanjon",
@@ -11903,7 +11978,7 @@
       "labels": [],
       "body": "This PR addresses #249.\r\n\r\nLarger epoch (e.g. 32-bit) seems quite straightforward.\r\n\r\n- It changes the DTLSPlaintext structure which is not sent on the wire.\r\n\r\n- It changes the RecordNumber structure used in the ACK message. This should likely contain the full epoch\r\n\r\n- It changes the 64-bit \"record_sequence_number\". This PR suggest the 64 low order bits of the RecordNumber.\r\nI think it could also be set to 0x0000 || sequence_number. I don't think epoch is needed here as the keys are\r\ndifferent.\r\n\r\nNote that a 32-bit epoch still limits the number of packets in a AES-GCM connection compared to what is allowed in DTLS 1.2.\r\n2^56.6 compared to 2^64. 2^56.5 is likely enough for all use cases but epoch could also be made even larger 2^48 or 2^64.",
       "createdAt": "2021-07-14T22:21:22Z",
-      "updatedAt": "2021-07-14T22:21:22Z",
+      "updatedAt": "2021-07-16T09:41:25Z",
       "baseRepository": "tlswg/dtls13-spec",
       "baseRefName": "master",
       "baseRefOid": "1edd82ec3ec1fb49df62c45728e1ef3f4d34fef7",
@@ -11915,6 +11990,40 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 252,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjkxMzUzNTc1",
+      "title": "More epochs per connection (epoch wrap)",
+      "url": "https://github.com/tlswg/dtls13-spec/pull/252",
+      "state": "OPEN",
+      "author": "emanjon",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Alternative solution to address issue #249 \r\n\r\nThis may be a simpler solution unless there are any security implications. DTLS 1.0 allowed epoch wrapping. DTLS 1.2 forbid epoch wrapping. I don't know the history behind this or if the reasons for forbidding epoch wrapping in DTLS 1.2 still apply to DTLS 1.3",
+      "createdAt": "2021-07-16T10:00:01Z",
+      "updatedAt": "2021-07-16T11:53:41Z",
+      "baseRepository": "tlswg/dtls13-spec",
+      "baseRefName": "master",
+      "baseRefOid": "1edd82ec3ec1fb49df62c45728e1ef3f4d34fef7",
+      "headRepository": "emanjon/dtls13-spec",
+      "headRefName": "patch-6",
+      "headRefOid": "e6af982136ede12668f6effccf5f2aecbe2b264d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "gloinul",
+          "authorAssociation": "NONE",
+          "body": "This change should not be accepted until one have decided if #253 makes sense, because then non-wrapping epoch would avoid creating a risk with the key exporter. ",
+          "createdAt": "2021-07-16T11:53:41Z",
+          "updatedAt": "2021-07-16T11:53:41Z"
+        }
+      ],
       "reviews": []
     }
   ]
