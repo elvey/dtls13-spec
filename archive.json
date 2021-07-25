@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-22T00:18:37.137486+00:00",
+  "timestamp": "2021-07-25T00:18:53.478090+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2175,15 +2175,15 @@
       "id": "MDU6SXNzdWU5MTQ1NzkzMTg=",
       "title": "Should the protocol specify a mechanism to ensure that the link is disconnected if the peer is restarted or some reason?",
       "url": "https://github.com/tlswg/dtls13-spec/issues/248",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yangyangtiantianlonglong",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Since there are various versions of dtls implementations, should the protocol specify a common mechanism for disconnects? When the status of the peer end is unknown.",
       "createdAt": "2021-06-08T08:30:41Z",
-      "updatedAt": "2021-07-15T20:55:42Z",
-      "closedAt": null,
+      "updatedAt": "2021-07-22T01:15:13Z",
+      "closedAt": "2021-07-22T01:15:13Z",
       "comments": [
         {
           "author": "ekr",
