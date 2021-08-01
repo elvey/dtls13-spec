@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-25T00:18:53.478090+00:00",
+  "timestamp": "2021-08-01T00:21:38.302272+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2241,7 +2241,7 @@
       "labels": [],
       "body": "If I have understood and calculated correctly DTLS 1.3 limits the number of\r\npackets in a AES-GCM connection to 2^40.5 compared to 2^64 in DTLS 1.2. This\r\nis quite a severe limitation that is not mentioned explicitly. The AEAD limits\r\nin themselves are not a problem, but the combination of AEAD limits (2^24.5)\r\nand a small epoch (2^16) is a problem.\r\n\r\nI think this is major problem in some use cases of DTLS. E.g. most 3GPP 5G use\r\ncases where DTLS or DTLS/SCTP is used for semi-permanent connections (lasting years)\r\nand where the terminating the connection cause severe disturbances.\r\n\r\nI did not find any discussion about this problem (but I could easily have missed it)\r\n\r\nIt is known that the limit of 2^48 packets in SRTP can be reached and 2^40.5 is\r\nsignificantly smaller than this...\r\n\r\nIf the document was not in such a late stage, I would have suggested to increase the size\r\nof the epoch to 32 bits.....\r\n\r\nI think this and the other problems DTLS 1.3 has with semi-permanent connections has to be\r\nsolved sooner than later.\r\n",
       "createdAt": "2021-07-14T08:31:13Z",
-      "updatedAt": "2021-07-21T19:49:42Z",
+      "updatedAt": "2021-07-29T09:13:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -2306,6 +2306,13 @@
           "body": "> @ekr @kaduk @chris-wood since it's through the IESG we would need to at least raise that this change was made after they had approved it. I suspect that doing some kind of 2-week heads up to the WG/IESG that we want to make the change before landing it. But, if we do that or something more drastic that's really up to @kaduk.\r\n\r\nI think a 2-week WGLC and notifying the IESG will suffice.",
           "createdAt": "2021-07-21T19:49:42Z",
           "updatedAt": "2021-07-21T19:49:42Z"
+        },
+        {
+          "author": "emanjon",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "FYI. We have now run into quite many problems with the interworking of semi-permanent DTLS/SCTP connections (lasting years) and DTLS 1.3:\r\n\r\n- No Diffie-Hellman rekeying\r\n- No post-handshake server authentication\r\n- No rekeying of the exporter_secret\r\n- 2^40.5 packets limit\r\n- 2 minute MSL requirement\r\n- 2^38.5 byte SCTP user message size limit\r\n\r\nOur initial plan was to just replace DTLS 1.2 with DTLS 1.3, leave DTLS/SCTP as is, but as the problems keep adding up we are now startnig to consider quite big changes to DTLS/SCTP 1.3 to make this work:\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/52\r\n\r\nUsing new DTLS connections instead of KeyUpdate could potentially address the first five, but is a significant change. ",
+          "createdAt": "2021-07-29T09:13:00Z",
+          "updatedAt": "2021-07-29T09:13:00Z"
         }
       ]
     },
@@ -2337,7 +2344,7 @@
       "labels": [],
       "body": "This is another major problem for SCTP/DTLS and other semi-permanent uses of DTLS 1.3 uncovered during the work on RFC6083bis.\r\n\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis\r\n\r\nThe current text is RFC6083bis is a quite unfortune (We would really like to encourage and recommend use of DTLS 1.3):\r\n\"For upper layer protocols where frequent re-run of Diffie-Hellman, rekeying of SCTP-AUTH, and server reauthentication is required and creating a new SCTP connection with DTLS 1.3 to replace the current is not a viable option it is RECOMMENDED to use DTLS 1.2.\"\r\n\r\nSCTP/DTLS uses the TLS exporter to derive keys for SCTP-AUTH. SCTP/DTLS also uses SCTP-AUTH to handle when DTLS traffic keys from old epochs can be forgotten. With DTLS 1.2, renogotiation with ECDHE updates the exporter_secret. In DTLS 1.3, KeyUpdate does not update the exporter_secret. \r\n\r\nRFC6083bis is now considering using a \"hack\" of adding the epoch value (or other info) to the DTLS 1.3 exporter context to at least get different SCTP-AUTH keys for each epoch. This would solve any \"AEAD limits\" problems with HMAC-SHA256 (we don't know what these limits would be but keying at some point seems good). It does not provide good protection against key leakage/compromise as the exporter_secret must be stored for years. A future solution for SCTP/DTLS 1.3 should make sure that an attacker is forced to do dynamic key exfiltration {{RFC7624}}.\r\n\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/52\r\n\r\nThe RFC6083bis authors discussed this today and would like to ask **if DTLS 1.3 could provide the feature that the output of the TLS exporter changes after a KeyUpdate?**\r\n\r\nWhile the epoch limitations #249 are purely DTLS, this issue is inherited from TLS 1.3.",
       "createdAt": "2021-07-16T10:56:46Z",
-      "updatedAt": "2021-07-16T14:45:14Z",
+      "updatedAt": "2021-07-29T09:11:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -2346,6 +2353,20 @@
           "body": "I agree that that text is unfortunate, but I feel like I'm kind of misunderstanding the situation.\r\n\r\nBecause KeyUpdate does not introduce new entropy, I would have expected users of exporters to export a key once and then to generate fresh keys as needed in an analagous fashion to the TLS transport key ladder rather than by re-exporting, which seems like it has risks of things getting desynchronized (for instance, how does the exporter work when you are sending with epoch X but receiving with X+1). What am I missing?\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2021-07-16T14:45:13Z",
           "updatedAt": "2021-07-16T14:45:13Z"
+        },
+        {
+          "author": "emanjon",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "That is a good point. RFC6038 does (as far as know) and RFC6083bis intends to control DTLS rekeying to sync the epoch used in DTLS with the \"epoch\" used for the SCTP-AUTH key. DTLS/SCTP cannot as far as we currently see follow the 2 minute default MSL requirement in DTLS. Very frequent rekeying (minutes) would lead to a large number of keys having to be stored. As KeyUpdate updates traffic keys I think that our exporting ideas do not work at all. DTLS/SCTP has to do like you suggest (export once and do key ladder) or setup new DTLS connections.",
+          "createdAt": "2021-07-29T09:08:22Z",
+          "updatedAt": "2021-07-29T09:08:22Z"
+        },
+        {
+          "author": "emanjon",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "FYI. We have now run into quite many problems with the interworking of semi-permanent DTLS/SCTP connections (lasting years) and DTLS 1.3:\r\n\r\n- No Diffie-Hellman rekeying\r\n- No post-handshake server authentication\r\n- No rekeying of the exporter_secret\r\n- 2^40.5 packets limit\r\n- 2 minute MSL requirement\r\n- 2^38.5 byte SCTP user message size limit\r\n\r\nOur initial plan was to just replace DTLS 1.2 with DTLS 1.3, leave DTLS/SCTP as is, but as the problems keep adding up we are now considereing quite big changes to DTLS/SCTP 1.3 to make this work:\r\nhttps://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/52\r\n\r\nUsing new DTLS connections instead of KeyUpdate could potentially address the first five, but is a significant change. ",
+          "createdAt": "2021-07-29T09:11:57Z",
+          "updatedAt": "2021-07-29T09:11:57Z"
         }
       ]
     }
