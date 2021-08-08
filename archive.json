@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-01T00:21:38.302272+00:00",
+  "timestamp": "2021-08-08T00:20:14.921714+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2321,16 +2321,24 @@
       "id": "MDU6SXNzdWU5NDU1MjQ1NDc=",
       "title": "Establishing New Associations with Existing Parameters - SHOULD / please add description of the alternatives",
       "url": "https://github.com/tlswg/dtls13-spec/issues/251",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "boaks",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "[Establishing New Associations with Existing Parameters](https://github.com/tlswg/dtls13-spec/blob/master/draft-ietf-tls-dtls13.md#establishing-new-associations-with-existing-parameters)\r\n\r\n> In cases where a server believes it has an existing association on a given host/port quartet and it receives an epoch=0 ClientHello, it SHOULD proceed with a new handshake but MUST NOT destroy the existing association until the client has demonstrated reachability either by completing a cookie exchange or by completing a complete handshake including delivering a verifiable Finished message.\r\n\r\n(The same statement is also used in [DTLS 1.2, RFC6347 4.2.8.  Establishing New Associations with Existing Parameters](https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.8).)\r\n\r\nBasically it's about the `SHOULD`, because in a naive interpretation of that opens also alternative ways to go. Otherwise it would be a `MUST`. Therefore I would enjoy it, if some words about that alternatives, e.g. environments or other motivation, could be added.\r\n\r\nIn my experience with the IoT usage of DTLS 1.2, it seems, that `RFC5246 - 7.2.1.  Closure Alert` is used as alternative. But that results in some unreliability (e.g. [RIOT](https://github.com/RIOT-OS/RIOT/pull/16422), down the comments, about the motivation to use `close`).\r\n\r\nReading #248 and the \"Generally, I think that's out of scope at this time.\", I somehow think, this is the same for this issue. Maybe, if it's more the rough ideas behind than the details of the alternative, it 's not that disruptive (but more helpful than using a Closure Alert).",
       "createdAt": "2021-07-15T15:46:15Z",
-      "updatedAt": "2021-07-15T15:46:15Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-08-06T12:12:06Z",
+      "closedAt": "2021-08-06T12:12:06Z",
+      "comments": [
+        {
+          "author": "boaks",
+          "authorAssociation": "NONE",
+          "body": "I guess, it's too late.",
+          "createdAt": "2021-08-06T12:12:06Z",
+          "updatedAt": "2021-08-06T12:12:06Z"
+        }
+      ]
     },
     {
       "number": 253,
