@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-08T00:20:14.921714+00:00",
+  "timestamp": "2021-08-10T00:21:07.674040+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2377,6 +2377,22 @@
           "updatedAt": "2021-07-29T09:11:57Z"
         }
       ]
+    },
+    {
+      "number": 254,
+      "id": "MDU6SXNzdWU5NjQ0NTYxNzg=",
+      "title": "Mention RFC 7457 in Security section",
+      "url": "https://github.com/tlswg/dtls13-spec/issues/254",
+      "state": "OPEN",
+      "author": "elvey",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I think it makes sense to refer to [RFC 7457](https://datatracker.ietf.org/doc/rfc7457/), \"Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)\" from the Security Considerations section.\r\nI think this would just be an informative reference.  Would improve the draft, IMVHO. \r\n\r\n<sup>(Hopefully I'm following [CONTRIBUTING.md](https://github.com/tlswg/dtls13-spec/blob/master/CONTRIBUTING.md) by opening this issue.  If such a Security Considerations section change is considered to change the spec, and 1+ editors support a change like this then I should post to the list?)</sup>",
+      "createdAt": "2021-08-09T23:06:12Z",
+      "updatedAt": "2021-08-09T23:07:54Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
