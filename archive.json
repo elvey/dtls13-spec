@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-10T00:21:07.674040+00:00",
+  "timestamp": "2021-08-15T00:20:22.069361+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -12030,7 +12030,7 @@
       "labels": [],
       "body": "This PR addresses #249.\r\n\r\nLarger epoch (e.g. 32-bit) seems quite straightforward.\r\n\r\n- It changes the DTLSPlaintext structure which is not sent on the wire.\r\n\r\n- It changes the RecordNumber structure used in the ACK message. This should likely contain the full epoch\r\n\r\n- It changes the 64-bit \"record_sequence_number\". This PR suggest the 64 low order bits of the RecordNumber.\r\nI think it could also be set to 0x0000 || sequence_number. I don't think epoch is needed here as the keys are\r\ndifferent.\r\n\r\nNote that a 32-bit epoch still limits the number of packets in a AES-GCM connection compared to what is allowed in DTLS 1.2.\r\n2^56.6 compared to 2^64. 2^56.5 is likely enough for all use cases but epoch could also be made even larger 2^48 or 2^64.",
       "createdAt": "2021-07-14T22:21:22Z",
-      "updatedAt": "2021-07-21T19:53:32Z",
+      "updatedAt": "2021-08-14T20:53:20Z",
       "baseRepository": "tlswg/dtls13-spec",
       "baseRefName": "master",
       "baseRefOid": "1edd82ec3ec1fb49df62c45728e1ef3f4d34fef7",
@@ -12060,6 +12060,106 @@
               "body": "Can we actually change the DTLSPlaintext format like this (recalling that it is used for the initial ClientHello)?\r\n\r\nI would mostly have expected to leave DTLSPlaintext unchanged since you are only going to be using it with epoch values less than four.",
               "createdAt": "2021-07-21T19:52:02Z",
               "updatedAt": "2021-07-21T19:53:32Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTIyMDgx",
+          "commit": {
+            "abbreviatedOid": "d9a40d5"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T17:32:49Z",
+          "updatedAt": "2021-08-14T17:32:50Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "> Can we actually change the DTLSPlaintext format like this (recalling that it is used for the initial ClientHello)?\r\n\r\n@kaduk can you elaborate on the problem here? I'm not seeing the issue. ",
+              "createdAt": "2021-08-14T17:32:49Z",
+              "updatedAt": "2021-08-14T17:32:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTIyMzgy",
+          "commit": {
+            "abbreviatedOid": "d9a40d5"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T17:38:16Z",
+          "updatedAt": "2021-08-14T17:38:17Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Can't we just keep this as uint16 and just call it epoch % 2^16?",
+              "createdAt": "2021-08-14T17:38:17Z",
+              "updatedAt": "2021-08-14T17:38:17Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTIyNTAx",
+          "commit": {
+            "abbreviatedOid": "d9a40d5"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T17:40:04Z",
+          "updatedAt": "2021-08-14T17:40:04Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "That seems like the simplest solution here, yeah. We can just track epoch as a uint64 internally, but only take the LSB in the plaintext here. ",
+              "createdAt": "2021-08-14T17:40:04Z",
+              "updatedAt": "2021-08-14T17:40:04Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTIyODg5",
+          "commit": {
+            "abbreviatedOid": "d9a40d5"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T17:47:13Z",
+          "updatedAt": "2021-08-14T17:47:14Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "(@ekr reminded me offline that this is a shared structure with DTLS 1.2, so not changing it is best.)",
+              "createdAt": "2021-08-14T17:47:13Z",
+              "updatedAt": "2021-08-14T17:47:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTMyMDU3",
+          "commit": {
+            "abbreviatedOid": "d9a40d5"
+          },
+          "author": "kaduk",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T20:53:20Z",
+          "updatedAt": "2021-08-14T20:53:20Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "> (@ekr reminded me offline that this is a shared structure with DTLS 1.2, so not changing it is best.)\r\n\r\nRight, that is the problem I was thinking of.\r\n\r\nI think `epoch % 2^16` should work, especially since we don't actually use this structure with large epochs (we've moved to DTLSCiphertext by then).",
+              "createdAt": "2021-08-14T20:53:20Z",
+              "updatedAt": "2021-08-14T20:53:20Z"
             }
           ]
         }
@@ -12098,6 +12198,94 @@
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 255,
+      "id": "MDExOlB1bGxSZXF1ZXN0NzEyODE4Njgy",
+      "title": "Increase effective epoch width to 64 bits, keeping the serialized representation 16 bits wide",
+      "url": "https://github.com/tlswg/dtls13-spec/pull/255",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Yet another alternative to #249. \r\n\r\ncc @emanjon @hannestschofenig ",
+      "createdAt": "2021-08-14T18:04:51Z",
+      "updatedAt": "2021-08-14T22:53:25Z",
+      "baseRepository": "tlswg/dtls13-spec",
+      "baseRefName": "master",
+      "baseRefOid": "1edd82ec3ec1fb49df62c45728e1ef3f4d34fef7",
+      "headRepository": "tlswg/dtls13-spec",
+      "headRefName": "caw/epoch-to-64bits",
+      "headRefOid": "91a9879f9158734e518010374d8591ab25301c10",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This seems like the right change (modulo analysis) but I think the use of the term \"effective\" is a mistake. We already carry a truncated epoch in DTLSCiphertext, so I think all that's needed is to say that the epoch field in DTLSPlaintext is also truncated but that the actual epoch is 64 bits.",
+          "createdAt": "2021-08-14T22:39:02Z",
+          "updatedAt": "2021-08-14T22:39:02Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> so I think all that's needed is to say that the epoch field in DTLSPlaintext is also truncated but that the actual epoch is 64 bits.\r\n\r\nDropped \"effective,\" so the current PR should reflect this. \ud83d\udc4d ",
+          "createdAt": "2021-08-14T22:49:30Z",
+          "updatedAt": "2021-08-14T22:49:30Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTM2Njgy",
+          "commit": {
+            "abbreviatedOid": "70beda1"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This looks right, again modulo analysis.",
+          "createdAt": "2021-08-14T22:49:35Z",
+          "updatedAt": "2021-08-14T22:50:43Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\n   from the connection epoch, which is an 8 octet counter\r\n```",
+              "createdAt": "2021-08-14T22:49:35Z",
+              "updatedAt": "2021-08-14T22:50:43Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "I think you can drop ```legacy``` here. We don't use it for DTLSCiphertext",
+              "createdAt": "2021-08-14T22:50:21Z",
+              "updatedAt": "2021-08-14T22:50:43Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzMwMTM2ODEx",
+          "commit": {
+            "abbreviatedOid": "7edb30b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-08-14T22:53:21Z",
+          "updatedAt": "2021-08-14T22:53:25Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "Works for me!",
+              "createdAt": "2021-08-14T22:53:21Z",
+              "updatedAt": "2021-08-14T22:53:25Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
