@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-15T00:20:22.069361+00:00",
+  "timestamp": "2021-08-17T00:20:20.902293+00:00",
   "repo": "tlswg/dtls13-spec",
   "labels": [
     {
@@ -2388,9 +2388,9 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
-      "body": "I think it makes sense to refer to [RFC 7457](https://datatracker.ietf.org/doc/rfc7457/), \"Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)\" from the Security Considerations section.\r\nI think this would just be an informative reference.  Would improve the draft, IMVHO. \r\n\r\n<sup>(Hopefully I'm following [CONTRIBUTING.md](https://github.com/tlswg/dtls13-spec/blob/master/CONTRIBUTING.md) by opening this issue.  If such a Security Considerations section change is considered to change the spec, and 1+ editors support a change like this then I should post to the list?)</sup>",
+      "body": "I think it makes sense to refer to [RFC 7457](https://datatracker.ietf.org/doc/rfc7457/), \"Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)\" from the Security Considerations section.\r\nI think this would just be an informative reference.  Would improve the draft, IMVHO. \r\n\r\n<sup>(Hopefully I'm following [CONTRIBUTING.md](https://github.com/tlswg/dtls13-spec/blob/master/CONTRIBUTING.md) by opening this issue.  If such a Security Considerations section change is considered to change the spec, and 1+ editors support a change like this then I should post to the list? [8/15 edit: It's in today's GitHub digest; hope it garners a response.])</sup>",
       "createdAt": "2021-08-09T23:06:12Z",
-      "updatedAt": "2021-08-09T23:07:54Z",
+      "updatedAt": "2021-08-15T18:10:36Z",
       "closedAt": null,
       "comments": []
     }
